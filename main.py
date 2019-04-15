@@ -63,6 +63,7 @@ if __name__ == '__main__':
         itemCol='MovieID',
         ratingCol='Rating',
         nonnegative=True,
+        coldStartStrategy='drop',
         implicitPrefs=False
     )
     print(FORMAT_STD_OUT('ALS'), type(als))
@@ -98,14 +99,20 @@ if __name__ == '__main__':
     # Extract best model from the cv model above
     best_model = model.bestModel
     print(FORMAT_STD_OUT('BEST MODEL'), best_model)
-    # print(FORMAT_STD_OUT('RANK'), best_model.getParam('rank'))
-    # print(FORMAT_STD_OUT('MAX ITER'), best_model.getMaxIter())
-    # print(FORMAT_STD_OUT('REG PARAM'), best_model.getRegParam())
+
+    get_reg_param = lambda model: model._java_obj.parent().getRegParam()
+    get_max_iter  = lambda model: model._java_obj.parent().getMaxIter()
+
+    print('rank:', best_model.rank)
+    print('regParam:', get_reg_param(best_model))
+    print('maxIter:', get_max_iter(best_model))
+
+    print('\n')
 
     # View the predictions
-    test_predictions = best_model.transform(test)
+    # test_predictions = best_model.transform(test)
     test_predictions.show(10)
 
     # Calculate and print the RMSE of the test_predictions
-    RMSE = evaluator.evaluate(test_predictions)
-    print(FORMAT_STD_OUT('RMSE'), RMSE)
+    rmse = evaluator.evaluate(test_predictions)
+    print(FORMAT_STD_OUT('RMSE'), rmse)
