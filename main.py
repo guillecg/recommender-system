@@ -14,11 +14,14 @@ from pyspark.ml.tuning import ParamGridBuilder, CrossValidator
 # https://github.com/narenkmanoharan/Movie-Recommender-System/blob/master/recommender.py
 # https://www.codementor.io/jadianes/building-a-recommender-with-apache-spark-python-example-app-part1-du1083qbw
 
+# TODO: show users related to another one
+
 
 FORMAT_STD_OUT = lambda x, w=12: \
     '[{message: <{width}}]'.format(message=x, width=w)
 
 DATA_DIR = 'data/masters/movies/'
+
 
 if __name__ == '__main__':
     # Getting the SparkContext
@@ -107,10 +110,11 @@ if __name__ == '__main__':
     print('regParam:', get_reg_param(best_model))
     print('maxIter:', get_max_iter(best_model))
 
-    print('\n')
+    # rank: 50, regParam: 0.05, maxIter: 5
+    # model.bestModel.stages[-1].extractParamMap()
 
     # View the predictions
-    # test_predictions = best_model.transform(test)
+    test_predictions = best_model.transform(test)
     test_predictions.show(10)
 
     # Calculate and print the RMSE of the test_predictions
